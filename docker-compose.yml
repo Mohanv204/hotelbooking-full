@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hotel_booking
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  app:
+    build: .
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: hotel_booking
+      DB_USER: root
+      DB_PASSWORD: root
+      JWT_SECRET: super-long-change-me-please-12345678901234567890
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+
