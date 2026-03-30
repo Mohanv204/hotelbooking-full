@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-const http = axios.create({ baseURL: '/api', timeout: 12000 })
+const http = axios.create({
+  baseURL: 'http://localhost:8080/api',
+  timeout: 12000
+})
 
 http.interceptors.request.use(cfg => {
   const t = localStorage.getItem('hotel_token')
@@ -23,7 +26,7 @@ http.interceptors.response.use(
 export const errMsg = (err) =>
   err.response?.data?.message ||
   err.response?.data?.error ||
-  (err.code === 'ERR_NETWORK' ? 'Cannot reach backend at port 9091. Is it running?' : null) ||
+  (err.code === 'ERR_NETWORK' ? 'Cannot reach backend at port 8080. Is it running?' : null) ||
   err.message ||
   'Something went wrong'
 
